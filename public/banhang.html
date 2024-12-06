@@ -86,6 +86,7 @@
           <tbody id="invoiceTableBody"></tbody>
         </table>
         <p class="total">Tổng: <span id="invoiceTotal">0 VNĐ</span></p>
+        <p>Thuế VAT (10%): <span id="vatAmount">0 VNĐ</span></p>
         <p>Tiền Trả Lại Cho Khách: <span id="changeDue">0 VNĐ</span></p>
         <p>Số Tiền Còn Nợ: <span id="amountDue">0 VNĐ</span></p>
       </div>
@@ -218,8 +219,15 @@
             invoiceTableBody.appendChild(newRow);
           });
 
+          const vatRate = 0.1; // Giả sử thuế VAT là 10%
+          const vatAmount = totalInvoice * vatRate;
+          totalInvoice += vatAmount;
+
           document.getElementById("invoiceTotal").textContent =
             totalInvoice + " VNĐ";
+          document.getElementById("vatAmount").textContent =
+            vatAmount.toFixed(2) + " VNĐ"; // Hiển thị thuế VAT
+
           const moneyGiven =
             parseFloat(document.getElementById("moneyGiven").value) || 0;
           const changeDue = moneyGiven - totalInvoice;
