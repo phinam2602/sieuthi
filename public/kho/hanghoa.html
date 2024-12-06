@@ -51,7 +51,6 @@
     </div>
 
     <script>
-      // Hàm thêm sản phẩm vào localStorage
       document.getElementById("themHH").addEventListener("click", function () {
         const maHH = document.getElementById("maHH").value;
         const xuatxu = document.getElementById("xuatxu").value;
@@ -66,11 +65,9 @@
         const trangThai = document.getElementById("trangThai").value;
         const thueVAT = document.getElementById("thueVAT").value;
 
-        // Kiểm tra và thêm sản phẩm vào localStorage
         if (maHH && tenHH && soLuong > 0) {
           const products = JSON.parse(localStorage.getItem("products")) || [];
 
-          // Kiểm tra nếu mã hàng hóa đã tồn tại
           const existingProduct = products.find(
             (product) => product.maHH === maHH
           );
@@ -95,37 +92,80 @@
           });
           localStorage.setItem("products", JSON.stringify(products));
           alert("Sản phẩm đã được thêm thành công!");
-
-          // Lập phiếu nhập
-          createImportReceipt({ maHH, tenHH, soLuong, giaNhap, nhaCC });
-
           loadProducts();
         } else {
           alert("Vui lòng nhập đầy đủ thông tin sản phẩm!");
         }
       });
 
-      // Hàm lập phiếu nhập
-      function createImportReceipt(product) {
-        const receipts =
-          JSON.parse(localStorage.getItem("importReceipts")) || [];
-        const receipt = {
-          maHH: product.maHH,
-          tenHH: product.tenHH,
-          soLuong: product.soLuong,
-          giaNhap: product.giaNhap,
-          nhaCC: product.nhaCC,
-          date: new Date().toISOString().split("T")[0], // Ngày nhập
-        };
-        receipts.push(receipt);
-        localStorage.setItem("importReceipts", JSON.stringify(receipts));
-      }
-
-      // Hàm tải và hiển thị hàng hóa từ localStorage
       function loadProducts() {
-        const products = JSON.parse(localStorage.getItem("products")) || [];
+        let products = JSON.parse(localStorage.getItem("products")) || [];
         const tbody = document.getElementById("productTableBody");
-        tbody.innerHTML = ""; // Xóa nội dung cũ
+        tbody.innerHTML = "";
+
+        // Kiểm tra và khởi tạo dữ liệu sản phẩm nếu chưa có
+        if (products.length === 0) {
+          const defaultProducts = [
+            {
+              maHH: "HH001",
+              xuatxu: "Việt Nam",
+              dvt: "Cái",
+              tenHH: "Sữa",
+              giaNhap: 8000,
+              nhaCC: "Vinamill",
+              soLuong: 100,
+              nh: "NH1",
+              giaBan: 12000,
+              maVach: "1234567890123",
+              trangThai: "Còn hàng",
+              thueVAT: "10%",
+            },
+            {
+              maHH: "HH002",
+              xuatxu: "Hàn Quốc",
+              dvt: "Hộp",
+              tenHH: "Cafe",
+              giaNhap: 15000,
+              nhaCC: "Minh Chiến",
+              soLuong: 50,
+              nh: "NH2",
+              giaBan: 25000,
+              maVach: "1234567890124",
+              trangThai: "Còn hàng",
+              thueVAT: "10%",
+            },
+            {
+              maHH: "HH003",
+              xuatxu: "Trung Quốc",
+              dvt: "Cái",
+              tenHH: "Kẹo Mút",
+              giaNhap: 5000,
+              nhaCC: "Chuppa Chups",
+              soLuong: 200,
+              nh: "NH3",
+              giaBan: 8000,
+              maVach: "1234567890125",
+              trangThai: "Còn hàng",
+              thueVAT: "10%",
+            },
+            {
+              maHH: "HH004",
+              xuatxu: "Nhật Bản",
+              dvt: "Gói",
+              tenHH: "Mì tôm",
+              giaNhap: 20000,
+              nhaCC: "Omachi",
+              soLuong: 30,
+              nh: "NH4",
+              giaBan: 35000,
+              maVach: "1234567890126",
+              trangThai: "Hết hàng",
+              thueVAT: "10%",
+            },
+          ];
+          localStorage.setItem("products", JSON.stringify(defaultProducts));
+          products = defaultProducts; // Cập nhật lại danh sách sản phẩm
+        }
 
         products.forEach((product, index) => {
           const newRow = document.createElement("tr");
@@ -148,31 +188,7 @@
         });
       }
 
-      // Hàm giảm số lượng sản phẩm
-      function reduceProductQuantity(purchasedProducts) {
-        const products = JSON.parse(localStorage.getItem("products")) || [];
-
-        purchasedProducts.forEach((purchased) => {
-          const product = products.find((p) => p.maHH === purchased.maHH);
-          if (product) {
-            product.soLuong -= purchased.quantity; // Giảm số lượng
-            if (product.soLuong < 0) {
-              product.soLuong = 0; // Đảm bảo số lượng không âm
-            }
-          }
-        });
-
-        localStorage.setItem("products", JSON.stringify(products)); // Cập nhật lại localStorage
-      }
-
-      // Tải sản phẩm khi trang được tải
       window.onload = loadProducts;
-
-      // Lắng nghe sự kiện từ banhang.html
-      window.updateProductQuantity = function (purchasedProducts) {
-        reduceProductQuantity(purchasedProducts);
-        loadProducts(); // Cập nhật lại danh sách sản phẩm
-      };
     </script>
   </body>
 </html>
