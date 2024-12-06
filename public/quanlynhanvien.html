@@ -108,6 +108,25 @@
           luong
         ) {
           const employees = JSON.parse(localStorage.getItem("employees")) || [];
+
+          // Kiểm tra mã nhân viên có trùng không
+          const existingEmployee = employees.find((emp) => emp.maNV === maNV);
+          if (existingEmployee) {
+            alert(
+              "Mã nhân viên đã tồn tại! Vui lòng nhập lại tất cả thông tin."
+            );
+            // Xóa tất cả các trường nhập
+            document.getElementById("maNV").value = "";
+            document.getElementById("tenNV").value = "";
+            document.getElementById("sdt").value = "";
+            document.getElementById("diaChi").value = "";
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+            document.getElementById("ngaySinh").value = "";
+            document.getElementById("luong").value = "";
+            return; // Ngăn không cho thêm nhân viên
+          }
+
           const newEmployee = {
             maNV,
             tenNV,
